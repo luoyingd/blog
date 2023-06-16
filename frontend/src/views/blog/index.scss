@@ -1,0 +1,128 @@
+.title-article {
+  font-size: 28px;
+  word-wrap: break-word;
+  color: #222226;
+  font-weight: 600;
+  margin-left: 10px;
+  text-align: left;
+  word-break: break-all;
+}
+
+.title-card {
+  text-align: left;
+}
+
+.article-info-box {
+  position: relative;
+  background: whitesmoke;
+  border-radius: 4px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.article-type-img {
+  width: px;
+  height: 30px;
+  line-height: 32px;
+}
+
+.article-bar-top {
+  color: whitesmoke;
+  width: 88%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.bar-content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding-left: 12px;
+}
+
+.artic-tag-box {
+  width: 100%;
+}
+
+span.time {
+  position: absolute;
+  right: 0;
+  margin-right: 15px;
+  color: #555666;
+  font-size: small;
+}
+
+.unlike {
+  position: absolute;
+  left: 0;
+  margin-left: 100px;
+}
+
+.like {
+  position: absolute;
+  left: 0;
+  margin-left: 100px;
+  color: red;
+}
+
+span.like-count {
+  position: absolute;
+  left: 0;
+  margin-left: 130px;
+  color: black;
+}
+
+.follow-nickName {
+  font-size: medium;
+  color: blue;
+  margin-right: 20px;
+  max-width: 232px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.blog-tags-box {
+  padding-left: 48px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.tags-box.artic-tag-box {
+  width: 100%;
+}
+
+span.label {
+  display: flex;
+  color: #999aaa;
+  font-size: small;
+}
+
+.tag {
+  margin-left: 10px;
+}
+
+.comment-time {
+  position: absolute;
+  right: 0;
+  margin-right: 150px;
+  font-size: xx-small;
+  color: lightblue;
+}
+
+.comment-content {
+  width: 650px;
+}
+
+.ql-editor {
+  padding-left: 5;
+  img {
+    width: 500px;
+    height: 400px;
+  }
+}

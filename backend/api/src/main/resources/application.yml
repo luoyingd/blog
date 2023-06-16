@@ -1,0 +1,70 @@
+server:
+  jetty:
+    threads:
+      acceptors: 4
+      selectors: 8
+  port: 8090
+  servlet:
+    context-path: /api
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 100MB
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://database-1.cfpsfry3qmsp.ap-southeast-2.rds.amazonaws.com:3306/blog?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
+      username: 123
+      password: 123
+      initial-size: 2
+      max-active: 4
+      min-idle: 4
+      max-wait: 60000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+  redis:
+    database: 0
+    host: myredis2.2ay9qs.ng.0001.apse2.cache.amazonaws.com
+    port: 6379
+    jedis:
+      pool:
+        max-active: 1000
+        max-wait: -1ms
+        max-idle: 16
+        min-idle: 8
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: luoyingd1997@gmail.com
+    password: 123
+    protocol: smtps
+
+
+sa-token:
+  token-name: token
+  timeout: 3600
+  activity-timeout: 3600
+  allow-concurrent-login: false
+  is-share: false
+  token-style: uuid
+  isReadCookie: true
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  type-aliases-package: com.example.blog.base.pojo
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: info
+    com.example.blog.wx.db.dao: warn
+  pattern:
+    console: "%d{yyyy/MM/dd HH:mm:ss}  %-5level  %msg%n"

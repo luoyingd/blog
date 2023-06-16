@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.common.dao.BlogDao">
+    <select id="searchBlogCount" resultType="java.lang.Integer"
+            parameterType="com.example.blog.base.request.blog.GetBlogForm">
+        select count(distinct id)
+        from tb_blog
+        where 1=1
+        <if test="authorId!=null">
+            and user_id = #{authorId}
+        </if>
+        <if test="topic!=null">
+            and topic = #{topic}
+        </if>
+        <if test="title!=null">
+            and title like #{title}
+        </if>
+        <if test="startDate!=null">
+            and TO_DAYS(create_time) &gt;= TO_DAYS(#{startDate})
+        </if>
+        <if test="endDate!=null">
+            and TO_DAYS(create_time) &lt;= TO_DAYS(#{endDate})
+        </if>
+    </select>
+    <select id="searchBlogCountByUserId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select count(distinct id)
+        from tb_blog
+        where user_id = #{userId}
+    </select>
+    <select id="getTOP5Topic" resultType="com.example.blog.base.response.data.Top5TopicDVO">
+        select topic, count(distinct id) as count
+        from tb_blog
+        where TO_DAYS(create_time) &gt;= TO_DAYS(#{start})
+          and TO_DAYS(create_time) &lt;= TO_DAYS(#{end})
+        group by topic
+        order by count desc limit 0, 5
+    </select>
+    <select id="getBlogs" resultType="com.example.blog.base.response.blog.LoadBlogInfoDVO"
+            parameterType="com.example.blog.base.request.blog.GetBlogForm">
+        select b.id as id, b.topic as topic, u.username as author, b.title as title, b.introduction as introduction,
+        b.comment as comments,
+        b.likes as likes,
+        b.create_time as createTime,
+        b.cover as cover
+        from tb_blog as b, tb_user as u
+        where b.user_id = u.id
+        <if test="authorId!=null">
+            and b.user_id = #{authorId}
+        </if>
+        <if test="topic!=null">
+            and b.topic = #{topic}
+        </if>
+        <if test="title!=null">
+            and b.title like #{title}
+        </if>
+        <if test="startDate!=null">
+            and TO_DAYS(b.create_time) &gt;= TO_DAYS(#{startDate})
+        </if>
+        <if test="endDate!=null">
+            and TO_DAYS(b.create_time) &lt;= TO_DAYS(#{endDate})
+        </if>
+        order by b.create_time desc limit #{page}, #{pageSize}
+    </select>
+    <select id="loadBlogContent" resultType="com.example.blog.base.response.blog.LoadBlogContentDVO"
+            parameterType="java.lang.Integer">
+        select b.id          as id,
+               b.topic       as topic,
+               u.username    as author,
+               u.photo       as authorPhoto,
+               b.title       as title,
+               b.content     as content,
+               b.create_time as createTime
+        from tb_blog as b,
+             tb_user as u
+        where b.user_id = u.id
+          and b.id = #{blogId}
+    </select>
+    <select id="searchLikeCountById" resultType="java.lang.Integer"
+            parameterType="java.lang.Integer">
+        select likes
+        from tb_blog
+        where id = #{blogId}
+    </select>
+    <update id="updateBlog" parameterType="com.example.blog.base.pojo.Blog">
+        update tb_blog set
+        <if test="content!=null">
+            content = #{content},
+        </if>
+        <if test="title!=null">
+            title = #{title},
+        </if>
+        <if test="topic!=null">
+            topic = #{topic},
+        </if>
+        <if test="introduction!=null">
+            introduction = #{introduction},
+        </if>
+        <if test="likes!=null">
+            likes = #{likes},
+        </if>
+        <if test="cover!=null">
+            cover = #{cover},
+        </if>
+        <if test="comment!=null">
+            comment = #{comment},
+        </if>
+        id = #{id}
+        where id = #{id}
+    </update>
+    <update id="batchUpdateBlogLike" parameterType="java.util.List">
+        update tb_blog
+        set likes=
+        <foreach collection="blogLikeCountRedisDataList" item="item" index="index"
+                 separator=" " open="case id" close="end">
+            when #{item.blogId} then #{item.count}
+        </foreach>
+        where id in
+        <foreach collection="blogLikeCountRedisDataList" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item.blogId}
+        </foreach>
+    </update>
+    <insert id="addBlog" parameterType="com.example.blog.base.pojo.Blog">
+        insert into tb_blog (user_id, content, title, topic, introduction, cover, comment, likes)
+        values (#{userId}, #{content}, #{title}, #{topic}, #{introduction}, #{cover}, 0, 0)
+    </insert>
+    <select id="searchBlogCommentById" parameterType="java.lang.Integer"
+            resultType="java.lang.Integer">
+        select comment
+        from tb_blog
+        where id = #{id}
+    </select>
+    <select id="loadBlogDetail" resultType="com.example.blog.base.response.blog.LoadBlogDetailDVO"
+            parameterType="java.lang.Integer">
+        select content, topic, title, introduction, cover
+        from tb_blog
+        where id = #{blogId}
+    </select>
+    <update id="delete" parameterType="java.lang.Integer">
+        delete
+        from tb_blog
+        where id = #{blogId}
+    </update>
+</mapper>

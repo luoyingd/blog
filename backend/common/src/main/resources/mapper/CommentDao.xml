@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.common.dao.CommentDao">
+    <select id="searchCommentCountByUserId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select count(distinct c.id)
+        from tb_comment as c,
+             tb_blog as b
+        where c.blog_id = b.id
+          and b.user_id = #{userId}
+    </select>
+    <insert id="add" parameterType="com.example.blog.base.request.comment.AddCommentForm">
+        insert into tb_comment (sender_id, blog_id, replier_id, content)
+        values (#{senderId}, #{blogId}, #{replierId}, #{content})
+    </insert>
+    <select id="getComment" resultType="com.example.blog.base.response.comment.CommentVO"
+            parameterType="com.example.blog.base.request.comment.GetCommentForm">
+        select c.id as commentId,
+        c.sender_id as senderId,
+        c.content as content,
+        c.create_time as createTime,
+        c.replier_id as replierId,
+        u.username as senderName,
+        u.photo as senderPhoto
+        from tb_comment as c, tb_user as u
+        where c.sender_id = u.id
+        and c.blog_id = #{blogId}
+        <if test="senderId!=null">
+            and (c.replier_id = #{senderId} or c.sender_id = #{senderId})
+        </if>
+        order by c.create_time desc limit #{pageIndex}, #{pageSize}
+    </select>
+    <update id="delete" parameterType="java.lang.Integer">
+        delete
+        from tb_comment
+        where id = #{id}
+    </update>
+    <select id="getCommentIdsByBlogId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select id
+        from tb_comment
+        where blog_id = #{blogId}
+    </select>
+    <update id="deleteBatch" parameterType="java.lang.Integer">
+        delete
+        from tb_comment
+        where blog_id = #{blogId}
+    </update>
+</mapper>

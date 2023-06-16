@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.common.dao.LikeDao">
+    <select id="loadLikeStatus" resultType="java.lang.Byte"
+            parameterType="java.lang.Integer">
+        select status
+        from tb_like
+        where user_id = #{userId}
+          and blog_id = #{blogId}
+    </select>
+    <insert id="batchAddLike" parameterType="java.util.List">
+        insert into tb_like (user_id, blog_id, status)
+        values
+        <foreach collection="likeList" index="index" item="item" separator=",">
+            (#{item.userId}, #{item.blogId}, #{item.like})
+        </foreach>
+    </insert>
+    <select id="batchSearchLike" resultType="com.example.blog.base.pojo.Like"
+            parameterType="java.util.List">
+        select *
+        from tb_like
+        where (user_id, blog_id) in
+        <foreach collection="blogLikeStatusRedisData" index="index" item="item"
+                 separator="," open="(" close=")">
+            (#{item.userId}, #{item.blogId})
+        </foreach>
+    </select>
+    <update id="batchUpdateLike" parameterType="java.util.List">
+        update tb_like set status =
+        <foreach collection="likeList" item="item" index="index"
+                 separator=" " open="case" close="end">
+            when user_id = #{item.userId} and blog_id = #{item.blogId} then #{item.like}
+        </foreach>
+        where (user_id, blog_id) in
+        <foreach collection="likeList" index="index" item="item"
+                 separator="," open="(" close=")">
+            (#{item.userId}, #{item.blogId})
+        </foreach>
+    </update>
+    <update id="deleteBatch" parameterType="java.lang.Integer">
+        delete
+        from tb_like
+        where blog_id = #{blogId}
+    </update>
+</mapper>
